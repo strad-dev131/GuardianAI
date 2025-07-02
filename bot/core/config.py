@@ -55,32 +55,67 @@ def load_config() -> Config:
         load_dotenv(env_path)
     
     try:
+        def safe_getenv(key: str, default: str = "") -> str:
+            """Safely get environment variable with proper null handling"""
+            value = os.getenv(key, default)
+            return value if value is not None else default
+
+        def safe_getenv_bool(key: str, default: str = "true") -> bool:
+            """Safely get boolean environment variable"""
+            value = safe_getenv(key, default)
+            return value.lower() in ("true", "1", "yes", "on")
+
+        def safe_getenv_int(key: str, default: str = "0") -> int:
+            """Safely get integer environment variable"""
+            value = safe_getenv(key, default)
+            try:
+                return int(value)
+            except (ValueError, TypeError):
+                return int(default)
+
+        def safe_getenv_float(key: str, default: str = "0.0") -> float:
+            """Safely get float environment variable"""
+            value = safe_getenv(key, default)
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                return float(default)
+
+        # Get admin chat ID safely
+        admin_chat_str = safe_getenv("ADMIN_CHAT_ID")
+        admin_chat_id = None
+        if admin_chat_str and admin_chat_str.strip():
+            try:
+                admin_chat_id = int(admin_chat_str)
+            except (ValueError, TypeError):
+                admin_chat_id = None
+
         config = Config(
-            bot_token=(os.getenv("BOT_TOKEN") or "").strip(),
-            api_id=int(os.getenv("API_ID") or "0"),
-            api_hash=(os.getenv("API_HASH") or "").strip(),
-            bot_name=os.getenv("BOT_NAME") or "GuardianAI",
-            admin_chat_id=int(os.getenv("ADMIN_CHAT_ID")) if (os.getenv("ADMIN_CHAT_ID") and os.getenv("ADMIN_CHAT_ID").strip()) else None,
+            bot_token=safe_getenv("BOT_TOKEN").strip(),
+            api_id=safe_getenv_int("API_ID"),
+            api_hash=safe_getenv("API_HASH").strip(),
+            bot_name=safe_getenv("BOT_NAME", "GuardianAI"),
+            admin_chat_id=admin_chat_id,
             
-            nsfw_threshold=float(os.getenv("NSFW_THRESHOLD") or "0.6"),
-            nsfw_model_path=os.getenv("NSFW_MODEL_PATH") or "models/nsfw_model.onnx",
+            nsfw_threshold=safe_getenv_float("NSFW_THRESHOLD", "0.6"),
+            nsfw_model_path=safe_getenv("NSFW_MODEL_PATH", "models/nsfw_model.onnx"),
             
-            spam_threshold=int(os.getenv("SPAM_THRESHOLD") or "5"),
-            max_messages_per_minute=int(os.getenv("MAX_MESSAGES_PER_MINUTE") or "10"),
-            raid_threshold=int(os.getenv("RAID_THRESHOLD") or "10"),
+            spam_threshold=safe_getenv_int("SPAM_THRESHOLD", "5"),
+            max_messages_per_minute=safe_getenv_int("MAX_MESSAGES_PER_MINUTE", "10"),
+            raid_threshold=safe_getenv_int("RAID_THRESHOLD", "10"),
             
-            auto_delete_executables=(os.getenv("AUTO_DELETE_EXECUTABLES") or "true").lower() == "true",
-            block_suspicious_links=(os.getenv("BLOCK_SUSPICIOUS_LINKS") or "true").lower() == "true",
-            copyright_detection=(os.getenv("COPYRIGHT_DETECTION") or "true").lower() == "true",
+            auto_delete_executables=safe_getenv_bool("AUTO_DELETE_EXECUTABLES", "true"),
+            block_suspicious_links=safe_getenv_bool("BLOCK_SUSPICIOUS_LINKS", "true"),
+            copyright_detection=safe_getenv_bool("COPYRIGHT_DETECTION", "true"),
             
-            database_path=os.getenv("DATABASE_PATH") or "data/guardian.db",
+            database_path=safe_getenv("DATABASE_PATH", "data/guardian.db"),
             
-            enable_dashboard=(os.getenv("ENABLE_DASHBOARD") or "false").lower() == "true",
-            dashboard_port=int(os.getenv("DASHBOARD_PORT") or "5000"),
-            dashboard_host=os.getenv("DASHBOARD_HOST") or "0.0.0.0",
+            enable_dashboard=safe_getenv_bool("ENABLE_DASHBOARD", "false"),
+            dashboard_port=safe_getenv_int("DASHBOARD_PORT", "5000"),
+            dashboard_host=safe_getenv("DASHBOARD_HOST", "0.0.0.0"),
             
-            log_level=os.getenv("LOG_LEVEL") or "INFO",
-            log_file=os.getenv("LOG_FILE") or "logs/guardian.log"
+            log_level=safe_getenv("LOG_LEVEL", "INFO"),
+            log_file=safe_getenv("LOG_FILE", "logs/guardian.log")
         )
         
         # Validate required fields
