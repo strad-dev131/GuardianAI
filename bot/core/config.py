@@ -1,4 +1,3 @@
-
 """
 Configuration management for GuardianAI
 """
@@ -56,13 +55,13 @@ def load_config() -> Config:
     
     def safe_getenv(key: str, default: str = "") -> str:
         """Safely get environment variable with proper null handling"""
-        value = os.getenv(key, default)
-        return value if value is not None else default
+        value = os.getenv(key)
+        return value.strip() if value else default.strip()
 
     def safe_getenv_bool(key: str, default: str = "true") -> bool:
         """Safely get boolean environment variable"""
-        value = safe_getenv(key, default)
-        return value.lower() in ("true", "1", "yes", "on")
+        value = os.getenv(key, default)
+        return str(value).strip().lower() in ("true", "1", "yes", "on")
 
     def safe_getenv_int(key: str, default: str = "0") -> int:
         """Safely get integer environment variable"""
@@ -91,9 +90,9 @@ def load_config() -> Config:
                 admin_chat_id = None
 
         config = Config(
-            bot_token=safe_getenv("BOT_TOKEN").strip(),
+            bot_token=safe_getenv("BOT_TOKEN"),
             api_id=safe_getenv_int("API_ID"),
-            api_hash=safe_getenv("API_HASH").strip(),
+            api_hash=safe_getenv("API_HASH"),
             bot_name=safe_getenv("BOT_NAME", "GuardianAI"),
             admin_chat_id=admin_chat_id,
             
