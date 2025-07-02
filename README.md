@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Pyrogram](https://img.shields.io/badge/Pyrogram-2.0+-green.svg)](https://pyrogram.org/)
-[![GitHub Stars](https://img.shields.io/github/stars/yourusername/GuardianAI)](https://github.com/yourusername/GuardianAI)
+[![GitHub Stars](https://img.shields.io/github/stars/strad-dev131/GuardianAI)](https://github.com/yourusername/GuardianAI)
 
 **GuardianAI** is a lightning-fast, AI-powered Telegram moderation bot that protects your groups from NSFW content, spam, raids, malicious files, and copyright violations. Built with cutting-edge AI models and designed for 24/7 operation.
 
@@ -57,7 +57,7 @@
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/GuardianAI.git
+git clone https://github.com/strad-dev131/GuardianAI.git
 cd GuardianAI
 ```
 
@@ -234,9 +234,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- **Documentation**: [Wiki](https://github.com/yourusername/GuardianAI/wiki)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/GuardianAI/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/GuardianAI/discussions)
+- **Documentation**: [Wiki](https://github.com/strad-dev131/GuardianAI/wiki)
+- **Issues**: [GitHub Issues](https://github.com/strad-dev131/GuardianAI/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/strad-dev131/GuardianAI/discussions)
 - **Telegram**: [@GuardianAI_Support](https://t.me/GuardianAI_Support)
 
 ## 🙏 Acknowledgments
@@ -259,4 +259,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **⭐ Star this repository if GuardianAI helps protect your Telegram communities!**
 
-Made with ❤️ by the GuardianAI Team
+Made with ❤️ by the TeamX Team
