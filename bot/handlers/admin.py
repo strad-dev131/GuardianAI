@@ -1,4 +1,3 @@
-
 """
 Admin Command Handlers for GuardianAI
 """
@@ -41,7 +40,6 @@ The bot automatically detects and removes:
 
 For support: @GuardianAI_Support
         """
-        
         try:
             await message.reply_text(help_text)
         except Exception as e:
@@ -76,7 +74,6 @@ For support: @GuardianAI_Support
 
 **System Status:** 🟢 Online
         """
-        
         try:
             await message.reply_text(status_text)
         except Exception as e:
@@ -104,7 +101,6 @@ For support: @GuardianAI_Support
                 "• Suspicious links\n\n"
                 "Use `/status` to check current settings."
             )
-            
         except Exception as e:
             self.logger.error(f"Error enabling bot: {e}")
             await message.reply_text("❌ Failed to enable GuardianAI. Please try again.")
@@ -127,7 +123,6 @@ For support: @GuardianAI_Support
                 "The bot is no longer actively moderating this group.\n"
                 "Use `/enable` to reactivate protection."
             )
-            
         except Exception as e:
             self.logger.error(f"Error disabling bot: {e}")
             await message.reply_text("❌ Failed to disable GuardianAI. Please try again.")
@@ -137,44 +132,48 @@ For support: @GuardianAI_Support
         """Set detection thresholds"""
         try:
             args = message.text.split()[1:]
-            if len(args) != 2:
+            if len(args) != 2 or not args[0] or not args[1]:
                 await message.reply_text(
                     "❌ **Usage:** `/set_threshold <type> <value>`\n\n"
                     "**Available types:**\n"
-                    "• `nsfw` - NSFW detection threshold (0.0-1.0)\n"
-                    "• `spam` - Messages before spam detection (1-20)\n"
-                    "• `raid` - Users joining to trigger raid mode (5-50)"
+                    "• `nsfw` - NSFW detection threshold (0.0–1.0)\n"
+                    "• `spam` - Messages before spam detection (1–20)\n"
+                    "• `raid` - Users joining to trigger raid mode (5–50)"
                 )
                 return
-            
-            threshold_type = args[0].lower()
-            value = float(args[1])
-            
+
+            try:
+                threshold_type = args[0].strip().lower()
+                value = float(args[1])
+            except Exception:
+                await message.reply_text("❌ Invalid input. Please make sure both type and value are valid.")
+                return
+
             if threshold_type == "nsfw":
                 if not 0.0 <= value <= 1.0:
                     await message.reply_text("❌ NSFW threshold must be between 0.0 and 1.0")
                     return
                 self.bot.config.nsfw_threshold = value
-                
+            
             elif threshold_type == "spam":
                 if not 1 <= value <= 20:
                     await message.reply_text("❌ Spam threshold must be between 1 and 20")
                     return
                 self.bot.config.spam_threshold = int(value)
-                
+            
             elif threshold_type == "raid":
                 if not 5 <= value <= 50:
                     await message.reply_text("❌ Raid threshold must be between 5 and 50")
                     return
                 self.bot.config.raid_threshold = int(value)
-                
+            
             else:
                 await message.reply_text("❌ Invalid threshold type. Use: nsfw, spam, or raid")
                 return
             
             await self.bot.log_action(
-                "THRESHOLD_CHANGED", 
-                message.chat.id, 
+                "THRESHOLD_CHANGED",
+                message.chat.id,
                 message.from_user.id,
                 f"{threshold_type}={value}"
             )
@@ -183,9 +182,6 @@ For support: @GuardianAI_Support
                 f"✅ **Threshold Updated**\n\n"
                 f"**{threshold_type.upper()}** threshold set to `{value}`"
             )
-            
-        except (ValueError, IndexError):
-            await message.reply_text("❌ Invalid value. Please provide a valid number.")
         except Exception as e:
             self.logger.error(f"Error setting threshold: {e}")
             await message.reply_text("❌ Failed to update threshold. Please try again.")
