@@ -54,33 +54,33 @@ def load_config() -> Config:
     if env_path.exists():
         load_dotenv(env_path)
     
+    def safe_getenv(key: str, default: str = "") -> str:
+        """Safely get environment variable with proper null handling"""
+        value = os.getenv(key, default)
+        return value if value is not None else default
+
+    def safe_getenv_bool(key: str, default: str = "true") -> bool:
+        """Safely get boolean environment variable"""
+        value = safe_getenv(key, default)
+        return value.lower() in ("true", "1", "yes", "on")
+
+    def safe_getenv_int(key: str, default: str = "0") -> int:
+        """Safely get integer environment variable"""
+        value = safe_getenv(key, default)
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return int(default)
+
+    def safe_getenv_float(key: str, default: str = "0.0") -> float:
+        """Safely get float environment variable"""
+        value = safe_getenv(key, default)
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return float(default)
+    
     try:
-        def safe_getenv(key: str, default: str = "") -> str:
-            """Safely get environment variable with proper null handling"""
-            value = os.getenv(key, default)
-            return value if value is not None else default
-
-        def safe_getenv_bool(key: str, default: str = "true") -> bool:
-            """Safely get boolean environment variable"""
-            value = safe_getenv(key, default)
-            return value.lower() in ("true", "1", "yes", "on")
-
-        def safe_getenv_int(key: str, default: str = "0") -> int:
-            """Safely get integer environment variable"""
-            value = safe_getenv(key, default)
-            try:
-                return int(value)
-            except (ValueError, TypeError):
-                return int(default)
-
-        def safe_getenv_float(key: str, default: str = "0.0") -> float:
-            """Safely get float environment variable"""
-            value = safe_getenv(key, default)
-            try:
-                return float(value)
-            except (ValueError, TypeError):
-                return float(default)
-
         # Get admin chat ID safely
         admin_chat_str = safe_getenv("ADMIN_CHAT_ID")
         admin_chat_id = None
